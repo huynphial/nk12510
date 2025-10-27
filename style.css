@@ -52,13 +52,13 @@
   /* Nút to hơn cho cảm ứng */
   .save-btn,
   .open-btn {
-    width: 48px;
-    height: 48px;
+    width: 72px;
+    height: 72px;
   }
 
   .save-btn::before,
   .open-btn::before {
-    font-size: 22px;
+    font-size: 72px;
   }
 
   .button-box {
