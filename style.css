@@ -5,6 +5,7 @@
   gap: 12px;
   margin-top: 20px;
   padding: 0 10px;
+  align-items: start;
 }
 
 /* Tablet: 2 cột */
@@ -355,6 +356,26 @@
   background: #0a944d;
 }
 
+#pagination {
+  display: flex;
+  justify-content: center; /* căn giữa ngang */
+  align-items: center;     /* nếu muốn căn giữa dọc */
+  flex-wrap: wrap;         /* nếu nhiều button xuống dòng */
+  gap: 8px;                /* khoảng cách giữa button */
+  margin-top: 20px;        /* cách lưới */
+}
+#pagination button {
+  padding: 8px 12px;
+  min-width: 40px;
+  font-size: 16px;
+  cursor: pointer;
+}
+#pagination button.active {
+  background: #0078d7;
+  color: #fff;
+  border-radius: 6px;
+}
+
 
 /* --- Mobile --- */
 @media (max-width: 1024px) {
@@ -379,7 +400,7 @@
     width: 60px;
     height: 60px;
   }
-    #pagination button {
+  #pagination button {
     font-size: 48px;       /* tăng chữ */
     padding: 18px 18px;    /* tăng vùng chạm */
     min-width: 44px;       /* tối thiểu 44px để đủ vùng chạm */
