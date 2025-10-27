@@ -1,0 +1,140 @@
+/* ========== GRID GALLERY ========== */
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* 3 cột desktop */
+  gap: 12px; /* giảm khoảng cách */
+  margin-top: 20px;
+  padding: 0 10px;
+}
+
+/* Responsive layout */
+@media (max-width: 1024px) {
+  #gallery {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  #gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== CARD ========== */
+.card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+/* ========== IMAGE ========== */
+.card img {
+  width: 100%;
+  height: auto; /* giữ nguyên tỉ lệ ảnh */
+  display: block;
+  object-fit: contain; /* đảm bảo ảnh không bị crop */
+  background-color: #f8f8f8; /* nền nhẹ nếu ảnh không full */
+}
+
+/* ========== INFO ========== */
+.card .info {
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+}
+
+.card .info strong {
+  font-size: 15px;
+  color: #111;
+}
+
+.card .info small {
+  color: #666;
+}
+
+/* ========== DETAIL ========== */
+.card .detail {
+  max-height: 0;
+  overflow: hidden;
+  background: #fafafa;
+  border-top: 1px solid #eee;
+  font-size: 13px;
+  color: #444;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 12px;
+}
+
+.card:hover .detail,
+.card .detail.show-detail {
+  max-height: 300px;
+  padding: 10px 12px;
+}
+
+/* ========== BUTTONS ========== */
+.button-box {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: translateY(8px);
+}
+
+.card:hover .button-box {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Buttons chung --- */
+.save-btn,
+.open-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, background 0.3s ease;
+  font-size: 0;
+}
+
+/* Nút Save */
+.save-btn {
+  background: linear-gradient(145deg, #0078d7, #005fa3);
+}
+.save-btn:hover {
+  transform: scale(1.1);
+  background: linear-gradient(145deg, #1e90ff, #0060b6);
+}
+.save-btn::before {
+  content: "💾";
+  font-size: 18px;
+}
+
+/* Nút Open */
+.open-btn {
+  background: linear-gradient(145deg, #28a745, #1e7e34);
+}
+.open-btn:hover {
+  transform: scale(1.1);
+  background: linear-gradient(145deg, #34c759, #1e9a3c);
+}
+.open-btn::before {
+  content: "🔗";
+  font-size: 18px;
+}
