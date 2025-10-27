@@ -404,6 +404,9 @@
   width: 128px;
   height: 128px;
   font-size: 48px;
+  transition: background 0.9s ease;
+  bottom: 40px;
+  right: 30px;
 }
 }
 
