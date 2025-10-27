@@ -11,7 +11,7 @@ async function loadPage() {
     const text = await res.text();
 
     const rows = text.trim().split("\n");
-    let headers = rows[0].replace(/\uFEFF/g, "").split("|").map(h => h.trim());
+    const headers = rows[0].replace(/\uFEFF/g, "").split("|").map(h => h.trim());
     const dataIndex = headers.indexOf("data");
     if (dataIndex === -1) throw new Error("Không tìm thấy cột 'data' trong file CSV.");
 
@@ -21,11 +21,7 @@ async function loadPage() {
       if (!rows[i].trim()) continue;
       const cols = rows[i].split("|");
 
-      // Nếu số cột ít hơn headers, bỏ qua
-      if (cols.length < headers.length) {
-        console.warn("Dòng thiếu dữ liệu:", rows[i]);
-        continue;
-      }
+      if (cols.length < headers.length) continue;
 
       const record = Object.fromEntries(headers.map((h, j) => [h, cols[j]?.trim()]));
       const rawData = record.data;
@@ -35,8 +31,6 @@ async function loadPage() {
         if (rawData) {
           const cleaned = rawData.replaceAll('""', '"').replace(/(^")|("$)/g, "");
           data = JSON.parse(cleaned);
-        } else {
-          console.warn("Thiếu cột data ở dòng", i + 1);
         }
       } catch (e) {
         console.warn("Lỗi parse JSON ở dòng", i + 1, e);
@@ -45,117 +39,101 @@ async function loadPage() {
       const imgSrc = data.url_max_2000 || data.url_max;
       if (!imgSrc) continue;
 
-      // ---- TẠO CARD (DOM) ----
+      // ===== CARD =====
       const card = document.createElement("div");
       card.className = "card";
 
-      // IMG
+      // ===== IMAGE =====
       const img = document.createElement("img");
       img.src = imgSrc;
       img.alt = data.title || "";
       img.className = "card-img";
-      // Khi ảnh lỗi
-      img.onerror = () => {
-        img.style.opacity = "0.6";
-        img.alt = "Image not available";
+      img.onclick = (ev) => {
+        ev.stopPropagation();
+        openModal(data); // mở modal khi click ảnh
       };
 
-      // INFO luôn hiện (title, camera, lens_model, realname)
+      // ===== INFO (hiển thị luôn) =====
       const info = document.createElement("div");
-      info.className = "info";
-      const titleEl = document.createElement("strong");
-      titleEl.textContent = data.title || "(No title)";
-      const br = document.createElement("br");
-      const cameraSmall = document.createElement("small");
-      // show camera on first line, lens_model on its own line below
-      cameraSmall.innerHTML = `${escapeHtml(data.camera || "")}`;
-      const lensLine = document.createElement("div");
-      lensLine.className = "lens-line";
-      lensLine.innerHTML = `<small>Lens: ${escapeHtml(data.lens_model || "Không rõ")}</small>`;
-      const ownerSmall = document.createElement("small");
-      ownerSmall.style.display = "block";
-      ownerSmall.textContent = data.realname || "";
+        info.className = "info-grid"; // đổi sang dạng grid 2 cột
 
-      info.appendChild(titleEl);
-      info.appendChild(br);
-      info.appendChild(cameraSmall);
-      info.appendChild(lensLine);
-      info.appendChild(ownerSmall);
+        // Tạo HTML chia 2 cột
+        info.innerHTML = `
+        <div class="info-col">
+            <strong>${escapeHtml(data.title || "(No title)")}</strong>
+            <small>📷 ${escapeHtml(data.camera || "Unknown camera")}</small>
+            <small>🔭 Lens: ${escapeHtml(data.lens_model || "Không rõ")}</small>
+            <small>📏 ${escapeHtml((data.max_width && data.max_height) ? `${data.max_width}×${data.max_height}` : "")}</small>
+            <small>🔦 Focal: ${escapeHtml(data.focal_length || "")}</small>
+        </div>
+        <div class="info-col">
+            <small>👤 ${escapeHtml(data.realname || "")}</small>
+            <small>📅 ${escapeHtml(data.datetaken || "")}</small>
+            <small>ISO: ${escapeHtml(data.iso || "")}</small>
+            <small>ƒ/${escapeHtml(data.aperture || "")}</small>
+            <small>${escapeHtml(data.exposure_time || "")}s</small>
+        </div>
+        `;
 
-      // DETAIL: ẩn mặc định, hiện khi hover/click (xuất hiện bên dưới ảnh)
+      // ===== DETAIL (ẩn, click mới hiện) =====
       const detail = document.createElement("div");
-      detail.className = "detail"; // CSS: .detail { max-height:0; overflow:hidden; transition... }
-      detail.innerHTML = `
-        <div><strong>Camera:</strong> ${escapeHtml(data.camera || "")}</div>
-        ${data.lens_model ? `<div><strong>Lens:</strong> ${escapeHtml(data.lens_model)}</div>` : ""}
-        <div><strong>ISO:</strong> ${escapeHtml(data.iso || "")}</div>
-        <div><strong>Aperture:</strong> ${escapeHtml(data.aperture || "")}</div>
-        <div><strong>Exposure:</strong> ${escapeHtml(data.exposure_time || "")}</div>
-        <div><strong>Focal:</strong> ${escapeHtml(data.focal_length || "")}</div>
-        <div><strong>Taken:</strong> ${escapeHtml(data.datetaken || "")}</div>
-      `;
+    detail.className = "detail";
 
-      // Append children
+    // các key không cần hiển thị (link ảnh, id, vv.)
+    const excludeKeys = [
+    "url_sq", "url_t", "url_s", "url_m", "url_l", "url_max", "url_max_2000",
+    "pathalias", "id", "owner", "secret", "server", "farm",
+    "height_s", "width_s", "height_m", "width_m","max_width_2000","max_height_2000",
+    "height_l", "width_l", "height_sq", "width_sq","max_width","max_height","datetaken","flickr_page","pageid"
+    ];
+
+    let detailHtml = "";
+    for (const [key, value] of Object.entries(data)) {
+    if (!value || excludeKeys.includes(key)) continue;
+    const keyLabel = key
+        .replace(/_/g, " ")      // đổi dấu _ thành khoảng trắng
+        .replace(/\b\w/g, c => c.toUpperCase()); // viết hoa chữ đầu
+    detailHtml += `<div><strong>${escapeHtml(keyLabel)}:</strong> ${escapeHtml(value)}</div>`;
+    }
+
+    detail.innerHTML = detailHtml || "<i>(Không có dữ liệu chi tiết)</i>";
+
+      // ===== BUTTONS =====
+      const buttonBox = document.createElement("div");
+      buttonBox.className = "button-box";
+
+      const saveBtn = document.createElement("button");
+      saveBtn.className = "save-btn";
+      saveBtn.textContent = "Save";
+      saveBtn.dataset.data = JSON.stringify(data);
+
+      const openBtn = document.createElement("button");
+      openBtn.className = "open-btn";
+      openBtn.textContent = "Open";
+      openBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (data.url_max) window.open(data.url_max, "_blank");
+        else alert("Không có ảnh gốc để mở!");
+      };
+
+      buttonBox.appendChild(saveBtn);
+      buttonBox.appendChild(openBtn);
+
+      // ===== GẮN VÀO CARD =====
       card.appendChild(img);
       card.appendChild(info);
-      
-    const buttonBox = document.createElement("div");
-    buttonBox.className = "button-box";
-      // --- Thêm nút Save ---
-    const saveBtn = document.createElement("button");
-    saveBtn.className = "save-btn";
-    saveBtn.textContent = "Save";
-    saveBtn.dataset.data = JSON.stringify(data)
+      card.appendChild(buttonBox);
+      card.appendChild(detail);
 
-    const openBtn = document.createElement("button");
-    openBtn.textContent = "Open";
-    openBtn.className = "open-btn";
-    openBtn.onclick = (e) => {
-    e.stopPropagation(); // tránh toggle detail
-    const imgUrl = data.url_max;
-    if (imgUrl) {
-        window.open(imgUrl, "_blank");
-    } else {
-        alert("Không có ảnh gốc để mở!");
-    }
-    };
-
-    // Gắn 2 nút vào box
-    buttonBox.appendChild(saveBtn);
-    buttonBox.appendChild(openBtn);
-
-    // Gắn box này vào card
-    card.appendChild(buttonBox);
-
-    card.appendChild(detail);
-
-
-      // ---- Sự kiện hover / touch để show detail dưới ảnh ----
-      // mouseenter/mouseleave cho desktop
-      card.addEventListener("mouseenter", () => {
-        detail.classList.add("show-detail");
-      });
-      card.addEventListener("mouseleave", () => {
-        detail.classList.remove("show-detail");
-      });
-
-      // click để toggle (hữu ích cho touch devices)
+      // ===== CLICK ĐỂ MỞ DETAIL =====
       card.addEventListener("click", (ev) => {
-        // nếu bấm vào nút trong modal (nếu có), tránh xung đột
-        // cũng cho phép click vào ảnh để open modal: nếu nhấn giữ Ctrl/Meta thì open modal
-        if (ev.target.tagName.toLowerCase() === "img" && (ev.ctrlKey || ev.metaKey)) {
-          openModal(data);
-          return;
+        if (detail.classList.contains("show-detail")) {
+          detail.classList.remove("show-detail");
+        } else {
+          detail.classList.add("show-detail");
         }
-        // toggle detail
-        if (detail.classList.contains("show-detail")) detail.classList.remove("show-detail");
-        else detail.classList.add("show-detail");
       });
 
-      // double click as alternative to open modal
-      card.addEventListener("dblclick", () => openModal(data));
-
-      // add to gallery
       gallery.appendChild(card);
     }
 
@@ -165,7 +143,6 @@ async function loadPage() {
     gallery.innerHTML = `<p style="color:red">Lỗi tải dữ liệu: ${escapeHtml(err.message)}</p>`;
   }
 }
-
 
 function createPagination(currentPage) {
   const totalPages = CONFIG.total_pages || 1; // 👈 chỉnh lại đúng số trang tối đa bạn có
@@ -262,6 +239,9 @@ const closeModal = document.getElementById("closeModal");
 
 function openModal(data) {
   modalImg.src = data.url_max || data.url_max_2000;
+  modalImg.style.maxWidth = "90vw";
+  modalImg.style.maxHeight = "90vh";
+
   modalInfo.innerHTML = `
     <h3>${escapeHtml(data.title || "")}</h3>
     <p><strong>Tác giả:</strong> ${escapeHtml(data.realname || "")}</p>
@@ -270,15 +250,16 @@ function openModal(data) {
     <p><strong>ISO:</strong> ${escapeHtml(data.iso || "")}</p>
     <p><strong>Aperture:</strong> ${escapeHtml(data.aperture || "")}</p>
     <p><strong>Focal Length:</strong> ${escapeHtml(data.focal_length || "")}</p>
-    <p><a href="${escapeHtml(data.flickr_page || '#')}" target="_blank">Xem trên Flickr</a></p>
+    ${
+      data.max_width && data.max_height
+        ? `<p><strong>Kích thước:</strong> ${data.max_width} × ${data.max_height}</p>`
+        : ""
+    }
+    <p><a href="${escapeHtml(data.flickr_page || "#")}" target="_blank">Xem trên Flickr</a></p>
   `;
+
   modal.style.display = "flex";
 }
-
-closeModal.onclick = () => (modal.style.display = "none");
-window.onclick = (e) => {
-  if (e.target === modal) modal.style.display = "none";
-};
 
 
 document.addEventListener("click", async (e) => {

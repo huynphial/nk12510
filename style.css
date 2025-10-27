@@ -138,3 +138,42 @@
   content: "🔗";
   font-size: 18px;
 }
+
+
+/* --- Grid thông tin gọn gàng --- */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px 8px; /* hàng - cột: rất nhỏ */
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.9);
+  border-top: 1px solid #ddd;
+  padding: 4px 8px 6px 8px;
+  border-radius: 0 0 10px 10px;
+  line-height: 1.25; /* chiều cao dòng nhỏ */
+}
+
+/* --- Các cột --- */
+.info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1px; /* rất nhỏ giữa các dòng */
+}
+
+.info-col strong {
+  color: #111;
+  font-weight: 600;
+}
+
+.info-col div {
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Mobile: chỉ 1 cột --- */
+@media (max-width: 600px) {
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1px 0;
+  }
+}
