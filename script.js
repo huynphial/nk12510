@@ -62,7 +62,7 @@ async function loadPage() {
         <div class="info-col">
             <strong>${escapeHtml(data.title || "(No title)")}</strong>
             <small>📷 ${escapeHtml(data.camera || "Unknown camera")}</small>
-            <small>🔭 Lens: ${escapeHtml(data.lens_model || "Không rõ")}</small>
+            <small>🔭 ${escapeHtml(data.lens_model || "Không rõ")}</small>
             <small>📏 ${escapeHtml((data.max_width && data.max_height) ? `${data.max_width}×${data.max_height}` : "")}</small>
             <small>🔦 Focal: ${escapeHtml(data.focal_length || "")}</small>
         </div>

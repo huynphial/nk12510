@@ -8,48 +8,48 @@
 }
 
 /* Tablet: 2 cột */
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
   #gallery {
     grid-template-columns: repeat(2, 1fr);
   }
-}
+} */
 
 /* Mobile: 1 cột, ảnh full width, font & nút to hơn */
-@media (max-width: 600px) {
+@media (max-width: 1024px) {
   #gallery {
     grid-template-columns: 1fr;
+    gap: 8px; /* giảm khoảng cách giữa các card */
   }
 
   .card img {
     width: 100%;
     height: auto;
     object-fit: contain;
+    min-width: 300px; /* tối thiểu */
+    min-height: 300px; /* tối thiểu */
   }
 
   .card {
     overflow: visible;
+    font-size: 32px; /* chữ to hơn */
   }
 
-  body {
-    font-size: 17px;
+  .card .info {
+    font-size: 24px;
+  }
+
+  .card .info strong {
+    font-size: 32px;
   }
 
   .info-grid {
     grid-template-columns: 1fr;
     gap: 2px 0;
-    font-size: 16px;
+    /* font-size: 48px; */
     line-height: 1.4;
   }
 
-  .card .info {
-    font-size: 16px;
-  }
-
-  .card .info strong {
-    font-size: 17px;
-  }
-
-  /* --- Nút lớn hơn cho cảm ứng --- */
+  /* Nút to hơn cho cảm ứng */
   .save-btn,
   .open-btn {
     width: 48px;
@@ -67,6 +67,7 @@
     gap: 10px;
   }
 }
+
 
 /* ========== MODAL (Full Screen Overlay) ========== */
 #modal {
@@ -273,7 +274,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2px 8px;
-  font-size: 13px;
+  /* font-size: 13px; */
   background: rgba(255, 255, 255, 0.9);
   border-top: 1px solid #ddd;
   padding: 4px 8px 6px 8px;
@@ -357,3 +358,4 @@
     height: 60px;
   }
 }
+
