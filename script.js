@@ -236,31 +236,53 @@ const modal = document.getElementById("modal");
 const modalImg = document.getElementById("modalImg");
 const modalInfo = document.getElementById("modalInfo");
 const closeModal = document.getElementById("closeModal");
+const modalSaveBtn = document.getElementById("modalSaveBtn");
+const modalOpenBtn = document.getElementById("modalOpenBtn");
 
 function openModal(data) {
+  currentModalData = data;
   modalImg.src = data.url_max || data.url_max_2000;
   modalImg.style.maxWidth = "90vw";
   modalImg.style.maxHeight = "90vh";
 
   modalInfo.innerHTML = `
-    <h3>${escapeHtml(data.title || "")}</h3>
-    <p><strong>Tác giả:</strong> ${escapeHtml(data.realname || "")}</p>
-    <p><strong>Camera:</strong> ${escapeHtml(data.camera || "")}</p>
-    <p><strong>Lens:</strong> ${escapeHtml(data.lens_model || "")}</p>
-    <p><strong>ISO:</strong> ${escapeHtml(data.iso || "")}</p>
-    <p><strong>Aperture:</strong> ${escapeHtml(data.aperture || "")}</p>
-    <p><strong>Focal Length:</strong> ${escapeHtml(data.focal_length || "")}</p>
     ${
       data.max_width && data.max_height
         ? `<p><strong>Kích thước:</strong> ${data.max_width} × ${data.max_height}</p>`
         : ""
     }
-    <p><a href="${escapeHtml(data.flickr_page || "#")}" target="_blank">Xem trên Flickr</a></p>
   `;
 
   modal.style.display = "flex";
 }
+// Sự kiện khi bấm nút Save
+modalSaveBtn.addEventListener("click", () => {
+  if (!currentModalData) return;
+  const blobUrl = currentModalData.url_max || currentModalData.url_max_2000;
+  const a = document.createElement("a");
+  a.href = blobUrl;
+  a.download = `${currentModalData.title || "image"}.jpg`;
+  a.click();
+});
 
+// Sự kiện khi bấm nút Open
+modalOpenBtn.addEventListener("click", () => {
+  if (!currentModalData) return;
+  const blobUrl = currentModalData.url_max || currentModalData.url_max_2000;
+  window.open(blobUrl, "_blank");
+});
+
+// Hàm đóng modal
+function closeModalFunc() {
+  modal.style.display = "none";
+}
+
+// Đóng khi click nút ✕
+closeModal.addEventListener("click", closeModalFunc);
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModalFunc();
+});
 
 document.addEventListener("click", async (e) => {
   if (e.target.classList.contains("save-btn")) {

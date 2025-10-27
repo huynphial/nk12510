@@ -293,3 +293,67 @@
   margin: 0;
   padding: 0;
 }
+
+/* Modal info row: info + nút cùng hàng */
+.modal-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* căn top, nếu muốn căn giữa dùng center */
+  margin-top: 10px;
+  gap: 12px;
+}
+
+/* Info text bên trái */
+#modalInfo {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.4;
+  background: transparent;  /* bỏ viền/nền */
+  border: none;             /* bỏ viền */
+  padding: 0;               /* bỏ padding dư */
+}
+
+/* Buttons bên phải, nằm ngang */
+.modal-buttons {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: row;      /* ← để 2 nút nằm ngang */
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Nút Save và Open */
+.modal-buttons .save-btn,
+.modal-buttons .open-btn {
+  width: 44px;
+  height: 44px;
+  font-size: 0;
+  border-radius: 50%;
+}
+
+/* --- Mobile --- */
+@media (max-width: 600px) {
+  .modal-info-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #modalInfo {
+    width: 100%;
+    font-size: 15px;
+  }
+
+  .modal-buttons {
+    flex-direction: row; /* vẫn nằm ngang */
+    gap: 16px;
+    margin-top: 8px;
+  }
+
+  .modal-buttons .save-btn,
+  .modal-buttons .open-btn {
+    width: 60px;
+    height: 60px;
+  }
+}

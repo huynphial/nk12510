@@ -12,13 +12,24 @@
   <div id="pagination" class="pagination"></div>
 
   <!-- Modal hiển thị chi tiết -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <span id="closeModal" class="close">&times;</span>
-      <img id="modalImg" src="" alt="">
-      <div id="modalInfo" class="modal-info"></div>
+<div id="modal">
+  <div class="content">
+    <span id="closeModal">✕</span>
+    <img id="modalImg" src="" alt="">
+
+    <!-- Hàng chứa info + nút -->
+    <div class="modal-info-row">
+      <div id="modalInfo"></div>
+
+      <div class="button-box modal-buttons">
+        <button class="save-btn" id="modalSaveBtn" title="Lưu ảnh"></button>
+        <button class="open-btn" id="modalOpenBtn" title="Mở ảnh"></button>
+      </div>
     </div>
   </div>
+</div>
+
+
 
   <script src="script.js"></script>
 </body>
