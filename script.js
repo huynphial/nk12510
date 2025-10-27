@@ -319,6 +319,31 @@ document.addEventListener("click", async (e) => {
   }
 });
 
+document.getElementById("scroll10Btn").addEventListener("click", () => {
+  const gallery = document.getElementById("gallery");
+  if (!gallery) return;
+  const cards = gallery.querySelectorAll(".card");
+  if (!cards.length) return;
+
+  // Tính vị trí hiện tại
+  const scrollTop = window.scrollY || window.pageYOffset;
+  let nextIndex = 0;
+
+  // Tìm thẻ card đầu tiên ở dưới vị trí hiện tại
+  for (let i = 0; i < cards.length; i++) {
+    const rect = cards[i].getBoundingClientRect();
+    const cardTop = rect.top + window.scrollY;
+    if (cardTop > scrollTop) {
+      nextIndex = i + 10; // 10 card tiếp theo
+      break;
+    }
+  }
+
+  if (nextIndex >= cards.length) nextIndex = cards.length - 1;
+  cards[nextIndex].scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+
 let CONFIG = {
   title: "Default Title",
   total_pages: 1,
