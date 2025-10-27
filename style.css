@@ -229,8 +229,8 @@
 /* --- Buttons --- */
 .save-btn,
 .open-btn {
-  width: 36px;
-  height: 36px;
+  /* width: 36px;
+  height: 36px; */
   border: none;
   border-radius: 50%;
   cursor: pointer;
@@ -253,7 +253,7 @@
 }
 .save-btn::before {
   content: "💾";
-  font-size: 18px;
+  font-size: 28px;
 }
 
 /* Open */
@@ -266,7 +266,7 @@
 }
 .open-btn::before {
   content: "🔗";
-  font-size: 18px;
+  font-size: 28px;
 }
 
 /* --- Grid info --- */
