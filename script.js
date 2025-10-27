@@ -241,7 +241,7 @@ const modalOpenBtn = document.getElementById("modalOpenBtn");
 
 function openModal(data) {
   currentModalData = data;
-  modalImg.src = data.url_max || data.url_max_2000;
+  modalImg.src = data.url_max_2000 || data.url_max;
   modalImg.style.maxWidth = "90vw";
   modalImg.style.maxHeight = "90vh";
 
