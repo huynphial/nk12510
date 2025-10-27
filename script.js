@@ -123,7 +123,7 @@ async function loadPage() {
       card.appendChild(img);
       card.appendChild(info);
       card.appendChild(buttonBox);
-      card.appendChild(detail);
+      // card.appendChild(detail);
 
       // ===== CLICK ĐỂ MỞ DETAIL =====
       card.addEventListener("click", (ev) => {

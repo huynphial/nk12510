@@ -68,46 +68,77 @@
   }
 }
 
-/* ========== MODAL ========== */
+/* ========== MODAL (Full Screen Overlay) ========== */
 #modal {
   display: none;
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 10000;
+  overflow: hidden;
 }
 
+/* Nội dung modal căn giữa */
 #modal .content {
   position: relative;
-  background: white;
+  background: #111;
   border-radius: 8px;
-  padding: 15px;
-  max-width: 90%;
-  max-height: 90%;
-  overflow-y: auto;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  max-width: 95vw;
+  max-height: 95vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
+/* Ảnh phóng to vừa màn hình */
 #modal img {
   max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 8px;
   display: block;
-  border-radius: 6px;
-  margin-bottom: 10px;
 }
 
+/* Thông tin ảnh (ở dưới) */
+#modal #modalInfo {
+  color: white;
+  text-align: left;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  width: 100%;
+  max-width: 800px;
+}
+
+/* Nút đóng */
 #closeModal {
   position: absolute;
-  top: 6px;
-  right: 10px;
-  font-size: 26px;
+  top: 10px;
+  right: 15px;
+  font-size: 28px;
+  color: white;
   cursor: pointer;
-  color: #333;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
 }
+
 #closeModal:hover {
-  color: red;
+  background: rgba(255,255,255,0.3);
 }
+
 
 /* ========== CARD ========== */
 .card {
@@ -158,14 +189,27 @@
   transition: max-height 0.35s ease, padding 0.35s ease;
   padding: 0 12px;
 }
-.card:hover .detail,
+
+
+/* .card:hover .detail,
 .card .detail.show-detail {
   max-height: 300px;
   padding: 10px 12px;
-}
+} */
 
 /* ========== BUTTONS ========== */
+
 .button-box {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+  opacity: 1;              /* 👈 luôn hiển thị */
+  transform: translateY(0); /* 👈 không trượt */
+}
+
+/* .button-box {
   position: absolute;
   bottom: 10px;
   right: 10px;
@@ -175,10 +219,11 @@
   transition: opacity 0.3s ease, transform 0.3s ease;
   transform: translateY(8px);
 }
+
 .card:hover .button-box {
   opacity: 1;
   transform: translateY(0);
-}
+} */
 
 /* --- Buttons --- */
 .save-btn,
