@@ -343,6 +343,20 @@ document.getElementById("scroll10Btn").addEventListener("click", () => {
   cards[nextIndex].scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
+// ===== NÚT NEXT PAGE =====
+const nextPageBtn = document.getElementById("nextPageBtn");
+
+nextPageBtn.addEventListener("click", () => {
+  const params = new URLSearchParams(window.location.search);
+  const currentPage = parseInt(params.get("page")) || 1;
+  const nextPage = currentPage + 1;
+  if (nextPage <= CONFIG.total_pages) {
+    goToPage(nextPage);
+  } else {
+    alert("Đây là trang cuối cùng!");
+  }
+});
+
 
 let CONFIG = {
   title: "Default Title",

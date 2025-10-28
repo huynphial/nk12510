@@ -356,6 +356,28 @@
   background: #0a944d;
 }
 
+#nextPageBtn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 9999;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: #2f4247;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  transition: background 0.3s ease;
+}
+
+#nextPageBtn:hover {
+  background: #0056b3;
+}
+
+
 #pagination {
   display: flex;
   justify-content: center; /* căn giữa ngang */
@@ -429,6 +451,18 @@
   bottom: 40px;
   right: 30px;
 }
+  #nextPageBtn {
+  width: 128px;
+  height: 128px;
+  font-size: 48px;
+  transition: background 0.9s ease;
+  bottom: 180px;
+  right: 30px;
+}
+.button-box {
+  right: 150px;
+}
+
 }
 
 
